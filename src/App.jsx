@@ -11,11 +11,13 @@ class App extends React.Component {
     this.state = {
       title: "",
       description: "",
-      steps: [],
+      ingredients: "",
+      steps: [""],
     };
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
+    this.setIngredients = this.setIngredients.bind(this);
     this.setStep = this.setStep.bind(this);
     this.addStep = this.addStep.bind(this);
     this.removeStep = this.removeStep.bind(this);
@@ -36,6 +38,13 @@ class App extends React.Component {
     });
   }
 
+  setIngredients(event) {
+    const value = event.target.value;
+    this.setState({
+      ingredients: value,
+    });
+  }
+
   setStep(event) {
     const value = event.target.value;
 
@@ -53,16 +62,25 @@ class App extends React.Component {
     this.setState({ steps });
   }
 
-  removeStep(event) {}
+  removeStep(event) {
+    event.preventDefault();
+
+    let steps = this.state.steps;
+    steps.pop();
+
+    this.setState({ steps });
+  }
 
   renderSteps() {
     let steps = [];
 
     for (let i = 0; i < this.state.steps.length; i++) {
       steps.push(
-        <div class="control">
-          Step {i + 1}
-          <textarea value={this.state.steps[i]} />
+        <div class="field">
+          <label class="label">{i + 1}</label>
+          <div class="control">
+            <textarea class="textarea" value={this.state.steps[i]}></textarea>
+          </div>
         </div>
       );
     }
@@ -102,7 +120,7 @@ class App extends React.Component {
                       <input
                         className="input"
                         type="text"
-                        placeholder="Text input"
+                        placeholder="Recipe title"
                         value={this.state.title}
                         onChange={this.setTitle}
                       />
@@ -114,9 +132,20 @@ class App extends React.Component {
                       <input
                         className="input"
                         type="text"
-                        placeholder="Text input"
+                        placeholder="Description of recipe"
                         value={this.state.description}
                         onChange={this.setDescription}
+                      />
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Ingredients</label>
+                    <div className="control">
+                      <textarea
+                        className="textarea"
+                        placeholder="Recipe ingredients"
+                        value={this.state.ingredients}
+                        onChange={this.setIngredients}
                       />
                     </div>
                   </div>
@@ -132,15 +161,38 @@ class App extends React.Component {
                       </button>
                       <button
                         className="button is-danger"
-                        onClick={this.addStep}
+                        onClick={this.removeStep}
                       >
-                        Add step
+                        Remove step
                       </button>
                     </div>
                   </div>
                 </form>
               </div>
-              <div className="column is-half">Auto</div>
+              <div className="column is-half">
+                <div className="container">Preview</div>
+                <div className="container card-preview">
+                  <section className="hero is-primary">
+                    <div className="hero-body">
+                      <div className="container">
+                        <h1 className="title">{this.state.title}</h1>
+                        <h2 className="subtitle">{this.state.description}</h2>
+                      </div>
+                    </div>
+                  </section>
+                  {this.state.steps.forEach((value, index, array) => {
+                    return (
+                      <section>
+                        <div className="container">
+                          <div className="container">
+                            <text>{value}</text>
+                          </div>
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </section>
