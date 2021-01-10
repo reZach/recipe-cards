@@ -42,4 +42,19 @@
   height: 384px;
   width: 576px;
   display: block;
+  overflow: hidden;
+  font-size: 0.75rem;
+}
+
+.card-preview .hero.is-fullheight {
+  height: 100%;
+}
+
+.tiled-info {
+  position: absolute;
+  width: 200px;
+  top: 0px;
+  right: 0px;
+  text-align: right;
+  color: white;
 }
