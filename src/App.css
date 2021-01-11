@@ -51,11 +51,29 @@
   min-height: 100%;
 }
 
+.badges {
+  position: absolute;
+  width: 200px;
+  top: 0px;
+  left: 0px;
+  text-align: left;
+  color: white;
+}
+
 .tiled-info {
   position: absolute;
   width: 200px;
   top: 0px;
   right: 0px;
   text-align: right;
+  color: white;
+}
+
+.built-by {
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+  left: 2px;
+  text-align: left;
   color: white;
 }

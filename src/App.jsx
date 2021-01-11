@@ -1,4 +1,4 @@
-import logo from "./logo.svg";
+import milk from "./milk-bottle.svg";
 import * as React from "react";
 import "./App.css";
 import "bulma/css/bulma.css";
@@ -16,6 +16,11 @@ class App extends React.Component {
       servings: null,
       ingredients: "",
       steps: [""],
+      vegetarian: false,
+      gluten: false,
+      lactose: false,
+      seafood: false,
+      spicy: false,
     };
 
     this.setTitle = this.setTitle.bind(this);
@@ -27,6 +32,11 @@ class App extends React.Component {
     this.setStep = this.setStep.bind(this);
     this.addStep = this.addStep.bind(this);
     this.removeStep = this.removeStep.bind(this);
+    this.setVegetarian = this.setVegetarian.bind(this);
+    this.setGluten = this.setGluten.bind(this);
+    this.setLactose = this.setLactose.bind(this);
+    this.setSeafood = this.setSeafood.bind(this);
+    this.setSpicy = this.setSpicy.bind(this);
     this.renderSteps = this.renderSteps.bind(this);
     this.renderFrontPreview = this.renderFrontPreview.bind(this);
     this.renderBackPreview = this.renderBackPreview.bind(this);
@@ -53,21 +63,21 @@ class App extends React.Component {
     });
   }
 
-  setPrep(event){
+  setPrep(event) {
     const value = event.target.value;
     this.setState({
       prep: value,
     });
   }
 
-  setCook(event){
+  setCook(event) {
     const value = event.target.value;
     this.setState({
       cook: value,
     });
   }
 
-  setServings(event){
+  setServings(event) {
     const value = event.target.value;
     this.setState({
       servings: value,
@@ -105,6 +115,41 @@ class App extends React.Component {
     this.setState({ steps });
   }
 
+  setVegetarian(event) {
+    const value = event.target.checked;
+    this.setState({
+      vegetarian: value,
+    });
+  }
+
+  setGluten(event) {
+    const value = event.target.checked;
+    this.setState({
+      gluten: value,
+    });
+  }
+
+  setLactose(event) {
+    const value = event.target.checked;
+    this.setState({
+      lactose: value,
+    });
+  }
+
+  setSeafood(event) {
+    const value = event.target.checked;
+    this.setState({
+      seafood: value,
+    });
+  }
+
+  setSpicy(event) {
+    const value = event.target.checked;
+    this.setState({
+      spicy: value,
+    });
+  }
+
   renderSteps() {
     let steps = [];
 
@@ -140,13 +185,27 @@ class App extends React.Component {
           <div className="container">
             <div className="columns">
               <div className="column is-two-fifths">
-                <h4 className="title is-4 mb-4">Ingredients</h4>
-                {this.state.ingredients.split("\n").map((ingredient, index) => {
-                  return <div key={index}>{ingredient}</div>;
-                })}
+                <h4
+                  className="title is-4 mb-4 pb-1"
+                  style={{ borderBottom: "2px solid #363636" }}
+                >
+                  Ingredients
+                </h4>
+                <ul className="pl-4" style={{ listStyle: "disc" }}>
+                  {this.state.ingredients
+                    .split("\n")
+                    .map((value, index, array) => {
+                      return <li key={index}>{value}</li>;
+                    })}
+                </ul>
               </div>
               <div className="column is-three-fifths">
-                <h4 className="title is-4 mb-4">Steps</h4>
+                <h4
+                  className="title is-4 mb-4 pb-1"
+                  style={{ borderBottom: "2px solid #363636" }}
+                >
+                  Steps
+                </h4>
                 <ol type="1" className="pl-4">
                   {this.state.steps.map((value, index, array) => {
                     return <li key={index}>{value}</li>;
@@ -164,34 +223,72 @@ class App extends React.Component {
     return (
       <div className="container card-preview">
         <section class="hero is-info is-fullheight">
-          <div class="hero-body">
-            <div class="container">
-              <h1 class="title has-text-centered">{this.state.title}</h1>
-              <h2 class="subtitle has-text-centered">
+          <div class="hero-body pl-0 pr-0">
+            <div
+              class="container"
+              style={{ border: "6px solid white", backgroundColor: "white" }}
+            >
+              <h1 class="title has-text-centered" style={{ color: "#363636" }}>
+                {this.state.title}
+              </h1>
+              <h2
+                class="subtitle has-text-centered"
+                style={{ color: "#363636" }}
+              >
                 {this.state.description}
               </h2>
             </div>
           </div>
         </section>
+        <div className="badges">
+          {this.state.vegetarian ? (
+            <span class="icon">
+              <i class="fas fa-leaf fa-2x"></i>
+            </span>
+          ) : null}
+          {this.state.gluten ? (
+            <span class="icon">
+              <i class="fas fa-bread-slice fa-2x"></i>
+            </span>
+          ) : null}
+          {this.state.lactose ? (
+            <span class="icon">
+              <img src={milk} />
+            </span>
+          ) : null}
+          {this.state.seafood ? (
+            <span class="icon">
+              <i class="fas fa-fish fa-2x"></i>
+            </span>
+          ) : null}
+          {this.state.spicy ? (
+            <span class="icon">
+              <i class="fas fa-pepper-hot fa-2x"></i>
+            </span>
+          ) : null}
+        </div>
         <div className="tiled-info">
           <div>
             {this.state.prep}
             <span class="icon is-left">
-              <i class="fas fa-hands"></i>
+              <i class="fas fa-hands fa-2x"></i>
             </span>
           </div>
           <div>
             {this.state.cook}
             <span class="icon is-left">
-              <i class="fas fa-temperature-high"></i>
+              <i class="fas fa-fire fa-2x"></i>
             </span>
           </div>
           <div>
             {this.state.servings}
             <span class="icon is-left">
-              <i class="fas fa-utensils"></i>
+              <i class="fas fa-utensils fa-2x"></i>
             </span>
           </div>
+        </div>
+        <div className="built-by">
+          Built by https://github.com/reZach/recipe-cards
         </div>
       </div>
     );
@@ -368,6 +465,56 @@ class App extends React.Component {
                       </button>
                     </div>
                   </div>
+                  <div className="field">
+                    <label class="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={this.state.vegetarian}
+                        onChange={this.setVegetarian}
+                      />{" "}
+                      Vegetarian
+                    </label>
+                  </div>
+                  <div className="field">
+                    <label class="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={this.state.gluten}
+                        onChange={this.setGluten}
+                      />{" "}
+                      Gluten
+                    </label>
+                  </div>
+                  <div className="field">
+                    <label class="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={this.state.lactose}
+                        onChange={this.setLactose}
+                      />{" "}
+                      Lactose
+                    </label>
+                  </div>
+                  <div className="field">
+                    <label class="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={this.state.seafood}
+                        onChange={this.setSeafood}
+                      />{" "}
+                      Seafood
+                    </label>
+                  </div>
+                  <div className="field">
+                    <label class="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={this.state.spicy}
+                        onChange={this.setSpicy}
+                      />{" "}
+                      Spicy
+                    </label>
+                  </div>
                 </form>
               </div>
               <div className="column is-half">
@@ -380,6 +527,23 @@ class App extends React.Component {
                   {this.renderBackPreview()}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+        <section className="section">
+          <div className="container">
+            <div>
+              Milk icon made by{" "}
+              <a
+                href="https://www.flaticon.com/authors/freepik"
+                title="Freepik"
+              >
+                Freepik
+              </a>{" "}
+              from{" "}
+              <a href="https://www.flaticon.com/" title="Flaticon">
+                www.flaticon.com
+              </a>
             </div>
           </div>
         </section>
