@@ -48,6 +48,7 @@
 
 .card-preview .hero.is-fullheight {
   height: 100%;
+  min-height: 100%;
 }
 
 .tiled-info {
