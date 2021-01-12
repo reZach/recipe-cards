@@ -1,5 +1,6 @@
 import milk from "./milk-bottle.svg";
 import * as React from "react";
+import { jsPDF } from "jspdf";
 import "./App.css";
 import "bulma/css/bulma.css";
 import "@fortawesome/fontawesome-free/js/all.js";
@@ -11,9 +12,9 @@ class App extends React.Component {
     this.state = {
       title: "",
       description: "",
-      prep: null,
-      cook: null,
-      servings: null,
+      prep: "",
+      cook: "",
+      servings: "",
       ingredients: "",
       steps: [""],
       vegetarian: false,
@@ -37,6 +38,7 @@ class App extends React.Component {
     this.setLactose = this.setLactose.bind(this);
     this.setSeafood = this.setSeafood.bind(this);
     this.setSpicy = this.setSpicy.bind(this);
+    this.download = this.download.bind(this);
     this.renderSteps = this.renderSteps.bind(this);
     this.renderFrontPreview = this.renderFrontPreview.bind(this);
     this.renderBackPreview = this.renderBackPreview.bind(this);
@@ -150,16 +152,28 @@ class App extends React.Component {
     });
   }
 
+  download(event) {
+    const newPDF = new jsPDF({
+      orientation: "landscape",
+      format: [152.4, 88.9]
+    });
+    newPDF.html(document.querySelector("#front"), {
+      callback: function (doc) {
+        doc.save();
+      }
+   });
+  }
+
   renderSteps() {
     let steps = [];
 
     for (let i = 0; i < this.state.steps.length; i++) {
       steps.push(
-        <div class="field">
-          <label class="label">{i + 1}</label>
-          <div class="control">
+        <div className="field" key={i}>
+          <label className="label">{i + 1}</label>
+          <div className="control">
             <textarea
-              class="textarea"
+              className="textarea"
               value={this.state.steps[i]}
               onChange={(e) => this.setStep(e, i)}
             ></textarea>
@@ -173,7 +187,7 @@ class App extends React.Component {
 
   renderFrontPreview() {
     return (
-      <div className="container card-preview">
+      <div className="container card-preview" id="front">
         <section className="hero is-info">
           <div className="hero-body pt-4 pb-4 pl-5 pr-5">
             <div className="container">
@@ -191,13 +205,13 @@ class App extends React.Component {
                 >
                   Ingredients
                 </h4>
-                <ul className="pl-4" style={{ listStyle: "disc" }}>
+                <ol type="1" className="pl-4">
                   {this.state.ingredients
                     .split("\n")
                     .map((value, index, array) => {
                       return <li key={index}>{value}</li>;
                     })}
-                </ul>
+                </ol>
               </div>
               <div className="column is-three-fifths">
                 <h4
@@ -221,18 +235,21 @@ class App extends React.Component {
 
   renderBackPreview() {
     return (
-      <div className="container card-preview">
-        <section class="hero is-info is-fullheight">
-          <div class="hero-body pl-0 pr-0">
+      <div className="container card-preview" id="back">
+        <section className="hero is-info is-fullheight">
+          <div className="hero-body pl-0 pr-0">
             <div
-              class="container"
+              className="container"
               style={{ border: "6px solid white", backgroundColor: "white" }}
             >
-              <h1 class="title has-text-centered" style={{ color: "#363636" }}>
+              <h1
+                className="title has-text-centered"
+                style={{ color: "#363636" }}
+              >
                 {this.state.title}
               </h1>
               <h2
-                class="subtitle has-text-centered"
+                className="subtitle has-text-centered"
                 style={{ color: "#363636" }}
               >
                 {this.state.description}
@@ -242,48 +259,48 @@ class App extends React.Component {
         </section>
         <div className="badges">
           {this.state.vegetarian ? (
-            <span class="icon">
-              <i class="fas fa-leaf fa-2x"></i>
+            <span className="icon ml-2 pt-2">
+              <i className="fas fa-leaf fa-2x"></i>
             </span>
           ) : null}
           {this.state.gluten ? (
-            <span class="icon">
-              <i class="fas fa-bread-slice fa-2x"></i>
+            <span className="icon ml-2 pt-2">
+              <i className="fas fa-bread-slice fa-2x"></i>
             </span>
           ) : null}
           {this.state.lactose ? (
-            <span class="icon">
-              <img src={milk} />
+            <span className="icon ml-2 pt-2">
+              <img src={milk} alt="Milk jug" />
             </span>
           ) : null}
           {this.state.seafood ? (
-            <span class="icon">
-              <i class="fas fa-fish fa-2x"></i>
+            <span className="icon ml-2 pt-2">
+              <i className="fas fa-fish fa-2x"></i>
             </span>
           ) : null}
           {this.state.spicy ? (
-            <span class="icon">
-              <i class="fas fa-pepper-hot fa-2x"></i>
+            <span className="icon ml-2 pt-2">
+              <i className="fas fa-pepper-hot fa-2x"></i>
             </span>
           ) : null}
         </div>
-        <div className="tiled-info">
+        <div className="tiled-info pl-4 pb-2">
           <div>
-            {this.state.prep}
-            <span class="icon is-left">
-              <i class="fas fa-hands fa-2x"></i>
+            <span className="times">{this.state.prep}</span>
+            <span className="icon is-left ml-4 pr-4">
+              <i className="fas fa-hands fa-2x"></i>
             </span>
           </div>
           <div>
-            {this.state.cook}
-            <span class="icon is-left">
-              <i class="fas fa-fire fa-2x"></i>
+            <span className="times">{this.state.cook}</span>
+            <span className="icon is-left ml-4 pr-4">
+              <i className="fas fa-fire fa-2x"></i>
             </span>
           </div>
           <div>
-            {this.state.servings}
-            <span class="icon is-left">
-              <i class="fas fa-utensils fa-2x"></i>
+            <span className="times">{this.state.servings}</span>
+            <span className="icon is-left ml-4 pr-4">
+              <i className="fas fa-utensils fa-2x"></i>
             </span>
           </div>
         </div>
@@ -297,19 +314,20 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="/">
+        <nav className="navbar" role="navigation" aria-label="main navigation">
+          <div className="navbar-brand">
+            <a className="navbar-item" href="/">
               <img
                 src="https://bulma.io/images/bulma-logo.png"
                 width="112"
                 height="28"
+                alt="Bulma logo"
               />
             </a>
 
             <a
               role="button"
-              class="navbar-burger"
+              className="navbar-burger"
               aria-label="menu"
               aria-expanded="false"
               data-target="navbarBasicExample"
@@ -320,32 +338,32 @@ class App extends React.Component {
             </a>
           </div>
 
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item">Home</a>
+          <div id="navbarBasicExample" className="navbar-menu">
+            <div className="navbar-start">
+              <a className="navbar-item">Home</a>
 
-              <a class="navbar-item">Documentation</a>
+              <a className="navbar-item">Documentation</a>
 
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">More</a>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">More</a>
 
-                <div class="navbar-dropdown">
-                  <a class="navbar-item">About</a>
-                  <a class="navbar-item">Jobs</a>
-                  <a class="navbar-item">Contact</a>
-                  <hr class="navbar-divider" />
-                  <a class="navbar-item">Report an issue</a>
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">About</a>
+                  <a className="navbar-item">Jobs</a>
+                  <a className="navbar-item">Contact</a>
+                  <hr className="navbar-divider" />
+                  <a className="navbar-item">Report an issue</a>
                 </div>
               </div>
             </div>
 
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                  <a class="button is-primary">
+            <div className="navbar-end">
+              <div className="navbar-item">
+                <div className="buttons">
+                  <a className="button is-primary">
                     <strong>Sign up</strong>
                   </a>
-                  <a class="button is-light">Log in</a>
+                  <a className="button is-light">Log in</a>
                 </div>
               </div>
             </div>
@@ -381,7 +399,7 @@ class App extends React.Component {
                         className="input"
                         type="text"
                         placeholder="Recipe title"
-                        autofocus="true"
+                        autoFocus={true}
                         value={this.state.title}
                         onChange={this.setTitle}
                       />
@@ -399,12 +417,12 @@ class App extends React.Component {
                       />
                     </div>
                   </div>
-                  <div class="field is-horizontal">
-                    <div class="field-body">
-                      <div class="field">
-                        <p class="control is-expanded">
+                  <div className="field is-horizontal">
+                    <div className="field-body">
+                      <div className="field">
+                        <p className="control is-expanded">
                           <input
-                            class="input"
+                            className="input"
                             type="text"
                             placeholder="Prep time"
                             value={this.state.prep}
@@ -412,10 +430,10 @@ class App extends React.Component {
                           />
                         </p>
                       </div>
-                      <div class="field">
-                        <p class="control is-expanded">
+                      <div className="field">
+                        <p className="control is-expanded">
                           <input
-                            class="input"
+                            className="input"
                             type="text"
                             placeholder="Cook time"
                             value={this.state.cook}
@@ -423,10 +441,10 @@ class App extends React.Component {
                           />
                         </p>
                       </div>
-                      <div class="field">
-                        <p class="control is-expanded">
+                      <div className="field">
+                        <p className="control is-expanded">
                           <input
-                            class="input"
+                            className="input"
                             type="text"
                             placeholder="Servings"
                             value={this.state.servings}
@@ -466,7 +484,7 @@ class App extends React.Component {
                     </div>
                   </div>
                   <div className="field">
-                    <label class="checkbox">
+                    <label className="checkbox">
                       <input
                         type="checkbox"
                         checked={this.state.vegetarian}
@@ -476,7 +494,7 @@ class App extends React.Component {
                     </label>
                   </div>
                   <div className="field">
-                    <label class="checkbox">
+                    <label className="checkbox">
                       <input
                         type="checkbox"
                         checked={this.state.gluten}
@@ -486,7 +504,7 @@ class App extends React.Component {
                     </label>
                   </div>
                   <div className="field">
-                    <label class="checkbox">
+                    <label className="checkbox">
                       <input
                         type="checkbox"
                         checked={this.state.lactose}
@@ -496,7 +514,7 @@ class App extends React.Component {
                     </label>
                   </div>
                   <div className="field">
-                    <label class="checkbox">
+                    <label className="checkbox">
                       <input
                         type="checkbox"
                         checked={this.state.seafood}
@@ -506,7 +524,7 @@ class App extends React.Component {
                     </label>
                   </div>
                   <div className="field">
-                    <label class="checkbox">
+                    <label className="checkbox">
                       <input
                         type="checkbox"
                         checked={this.state.spicy}
@@ -525,6 +543,11 @@ class App extends React.Component {
                 <div className="container">
                   Back
                   {this.renderBackPreview()}
+                </div>
+                <div className="container mt-4">
+                  <button className="button is-primary" onClick={this.download}>
+                    Download
+                  </button>
                 </div>
               </div>
             </div>

@@ -62,11 +62,16 @@
 
 .tiled-info {
   position: absolute;
-  width: 200px;
+  width: auto;
   top: 0px;
   right: 0px;
   text-align: right;
   color: white;
+}
+
+.tiled-info .times {
+  vertical-align: super;
+  padding-right: 4px;
 }
 
 .built-by {
