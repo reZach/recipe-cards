@@ -155,7 +155,7 @@ class App extends React.Component {
   download(event) {
     const newPDF = new jsPDF({
       orientation: "landscape",
-      format: [152.4, 88.9]
+      format: [152.4, 88.9] // 6in by 3.5in
     });
     newPDF.html(document.querySelector("#front"), {
       callback: function (doc) {
