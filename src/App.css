@@ -1,3 +1,7 @@
+.container:not(.is-max-desktop):not(.is-max-widescreen) {
+  max-width: 1358px;
+}
+
 .App {
   text-align: center;
 }
@@ -72,6 +76,15 @@
 .tiled-info .times {
   vertical-align: super;
   padding-right: 4px;
+}
+
+.recipe-source {
+  position: absolute;
+  width: 100%;
+  bottom: 16px;
+  left: 2px;
+  text-align: left;
+  color: white;
 }
 
 .built-by {

@@ -1,5 +1,6 @@
 import milk from "./milk-bottle.svg";
 import * as React from "react";
+import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 import "./App.css";
 import "bulma/css/bulma.css";
@@ -17,12 +18,16 @@ class App extends React.Component {
       servings: "",
       ingredients: "",
       steps: [""],
+      source: "",
       vegetarian: false,
       gluten: false,
       lactose: false,
       seafood: false,
       spicy: false,
     };
+
+    this.recipeCardWidth = 152.4; // "mm" (jsPDF) unit = 6 in
+    this.recipeCardHeight = 88.9; // "mm" (jsPDF) unit = 3.5 in
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
@@ -33,6 +38,7 @@ class App extends React.Component {
     this.setStep = this.setStep.bind(this);
     this.addStep = this.addStep.bind(this);
     this.removeStep = this.removeStep.bind(this);
+    this.setSource = this.setSource.bind(this);
     this.setVegetarian = this.setVegetarian.bind(this);
     this.setGluten = this.setGluten.bind(this);
     this.setLactose = this.setLactose.bind(this);
@@ -117,6 +123,13 @@ class App extends React.Component {
     this.setState({ steps });
   }
 
+  setSource(event){
+    const value = event.target.value;
+    this.setState({
+      source: value,
+    });
+  }
+
   setVegetarian(event) {
     const value = event.target.checked;
     this.setState({
@@ -153,15 +166,33 @@ class App extends React.Component {
   }
 
   download(event) {
-    const newPDF = new jsPDF({
-      orientation: "landscape",
-      format: [152.4, 88.9] // 6in by 3.5in
+    const _ = this;
+    const width = this.recipeCardWidth;
+    const height = this.recipeCardHeight;
+
+    toPng(document.getElementById("js-front")).then(function(frontImgData){
+      
+      toPng(document.getElementById("js-back")).then(function(backImgData){
+        const newPDF = new jsPDF({
+          orientation: "landscape",
+          format: [width, height],
+          compress: true
+        });
+        newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
+        newPDF.addPage([width, height], "landscape");
+        newPDF.setPage(2);
+        newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
+        newPDF.save(`${_.state.title.replace(" ", "")}-RecipeCard.pdf`);
+      })
+      .catch(function(error){
+        console.error("Failed to save back of recipe card to PNG.");
+        console.error(error);
+      });
+    })
+    .catch(function(error){
+      console.error("Failed to save front of recipe card to PNG.");
+      console.error(error);
     });
-    newPDF.html(document.querySelector("#front"), {
-      callback: function (doc) {
-        doc.save();
-      }
-   });
   }
 
   renderSteps() {
@@ -187,7 +218,7 @@ class App extends React.Component {
 
   renderFrontPreview() {
     return (
-      <div className="container card-preview" id="front">
+      <div className="container card-preview" id="js-front">
         <section className="hero is-info">
           <div className="hero-body pt-4 pb-4 pl-5 pr-5">
             <div className="container">
@@ -205,13 +236,13 @@ class App extends React.Component {
                 >
                   Ingredients
                 </h4>
-                <ol type="1" className="pl-4">
+                <div type="1" className="pl-4">
                   {this.state.ingredients
                     .split("\n")
                     .map((value, index, array) => {
-                      return <li key={index}>{value}</li>;
+                      return <div key={index}>{value}</div>;
                     })}
-                </ol>
+                </div>
               </div>
               <div className="column is-three-fifths">
                 <h4
@@ -235,7 +266,7 @@ class App extends React.Component {
 
   renderBackPreview() {
     return (
-      <div className="container card-preview" id="back">
+      <div className="container card-preview" id="js-back">
         <section className="hero is-info is-fullheight">
           <div className="hero-body pl-0 pr-0">
             <div
@@ -304,8 +335,11 @@ class App extends React.Component {
             </span>
           </div>
         </div>
+        <div className="recipe-source">
+          {this.state.source}
+        </div>
         <div className="built-by">
-          Built by https://github.com/reZach/recipe-cards
+          Built by: https://github.com/reZach/recipe-cards
         </div>
       </div>
     );
@@ -481,6 +515,18 @@ class App extends React.Component {
                       >
                         Remove step
                       </button>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Source</label>
+                    <div className="control">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Source of recipe"
+                        value={this.state.source}
+                        onChange={this.setSource}
+                      />
                     </div>
                   </div>
                   <div className="field">
