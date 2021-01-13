@@ -26,8 +26,10 @@ class App extends React.Component {
       spicy: false,
     };
 
-    this.recipeCardWidth = 152.4; // "mm" (jsPDF) unit = 6 in
-    this.recipeCardHeight = 88.9; // "mm" (jsPDF) unit = 3.5 in
+    this.recipeCardMargin = 6.35; // 0.25in margin on all sides (0.125in bleed + 0.125 safe margin)
+    this.recipeCardWidth = 152.4 + (this.recipeCardMargin * 2); // "mm" (jsPDF) unit = 6in
+    this.recipeCardHeight = 88.9 + (this.recipeCardMargin * 2); // "mm" (jsPDF) unit = 3.5in
+    
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
@@ -167,6 +169,7 @@ class App extends React.Component {
 
   download(event) {
     const _ = this;
+    const margin = this.recipeCardMargin;
     const width = this.recipeCardWidth;
     const height = this.recipeCardHeight;
 
@@ -178,11 +181,19 @@ class App extends React.Component {
           format: [width, height],
           compress: true
         });
-        newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
+        newPDF.addImage(frontImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
         newPDF.addPage([width, height], "landscape");
         newPDF.setPage(2);
-        newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
-        newPDF.save(`${_.state.title.replace(" ", "")}-RecipeCard.pdf`);
+        newPDF.addImage(backImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
+
+        newPDF.addPage([width, height], "landscape");
+        newPDF.setPage(3);
+        newPDF.addImage(frontImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
+        newPDF.addPage([width, height], "landscape");
+        newPDF.setPage(4);
+        newPDF.addImage(backImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
+
+        newPDF.save(`${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`);
       })
       .catch(function(error){
         console.error("Failed to save back of recipe card to PNG.");
@@ -226,12 +237,12 @@ class App extends React.Component {
             </div>
           </div>
         </section>
-        <section className="section pt-4">
+        <section className="section pt-4 pb-0">
           <div className="container">
             <div className="columns">
               <div className="column is-two-fifths">
                 <h4
-                  className="title is-4 mb-4 pb-1"
+                  className="title is-4 mb-4"
                   style={{ borderBottom: "2px solid #363636" }}
                 >
                   Ingredients
