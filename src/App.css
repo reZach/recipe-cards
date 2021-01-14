@@ -43,11 +43,12 @@
 
 .card-preview {
   border: 2px solid black;
-  height: 384px;
-  width: 576px;
+  margin: 0 !important;
+  height: 768px !important;
+  width: 1328px !important;
   display: block;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: 1.25em;
 }
 
 .card-preview .hero.is-fullheight {
@@ -81,7 +82,7 @@
 .recipe-source {
   position: absolute;
   width: 100%;
-  bottom: 16px;
+  bottom: 22px;
   left: 2px;
   text-align: left;
   color: white;

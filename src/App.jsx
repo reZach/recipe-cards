@@ -26,10 +26,9 @@ class App extends React.Component {
       spicy: false,
     };
 
-    this.recipeCardMargin = 6.35; // 0.25in margin on all sides (0.125in bleed + 0.125 safe margin)
-    this.recipeCardWidth = 152.4 + (this.recipeCardMargin * 2); // "mm" (jsPDF) unit = 6in
-    this.recipeCardHeight = 88.9 + (this.recipeCardMargin * 2); // "mm" (jsPDF) unit = 3.5in
-    
+    this.recipeCardMargin = 9.525; // 0.25in margin on all sides (0.125in bleed + 0.125 safe margin) 
+    this.recipeCardWidth = 152.4 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 6in
+    this.recipeCardHeight = 88.9 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 3.5in
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
@@ -125,7 +124,7 @@ class App extends React.Component {
     this.setState({ steps });
   }
 
-  setSource(event){
+  setSource(event) {
     const value = event.target.value;
     this.setState({
       source: value,
@@ -173,37 +172,68 @@ class App extends React.Component {
     const width = this.recipeCardWidth;
     const height = this.recipeCardHeight;
 
-    toPng(document.getElementById("js-front")).then(function(frontImgData){
-      
-      toPng(document.getElementById("js-back")).then(function(backImgData){
-        const newPDF = new jsPDF({
-          orientation: "landscape",
-          format: [width, height],
-          compress: true
-        });
-        newPDF.addImage(frontImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
-        newPDF.addPage([width, height], "landscape");
-        newPDF.setPage(2);
-        newPDF.addImage(backImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
+    toPng(document.getElementById("js-front"))
+      .then(function (frontImgData) {
+        toPng(document.getElementById("js-back"))
+          .then(function (backImgData) {
+            const newPDF = new jsPDF({
+              orientation: "landscape",
+              format: [width, height],
+              compress: true,
+            });
+            newPDF.addImage(
+              frontImgData,
+              "PNG",
+              margin,
+              margin,
+              width - margin * 2,
+              height - margin * 2
+            );
+            newPDF.addPage([width, height], "landscape");
+            newPDF.setPage(2);
+            newPDF.addImage(
+              backImgData,
+              "PNG",
+              margin,
+              margin,
+              width - margin * 2,
+              height - margin * 2
+            );
 
-        newPDF.addPage([width, height], "landscape");
-        newPDF.setPage(3);
-        newPDF.addImage(frontImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
-        newPDF.addPage([width, height], "landscape");
-        newPDF.setPage(4);
-        newPDF.addImage(backImgData, "PNG", margin, margin, width - (margin * 2), height - (margin * 2));
+            newPDF.addPage([width, height], "landscape");
+            newPDF.setPage(3);
+            newPDF.addImage(
+              frontImgData,
+              "PNG",
+              margin,
+              margin,
+              width - margin * 2,
+              height - margin * 2
+            );
+            newPDF.addPage([width, height], "landscape");
+            newPDF.setPage(4);
+            newPDF.addImage(
+              backImgData,
+              "PNG",
+              margin,
+              margin,
+              width - margin * 2,
+              height - margin * 2
+            );
 
-        newPDF.save(`${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`);
+            newPDF.save(
+              `${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`
+            );
+          })
+          .catch(function (error) {
+            console.error("Failed to save back of recipe card to PNG.");
+            console.error(error);
+          });
       })
-      .catch(function(error){
-        console.error("Failed to save back of recipe card to PNG.");
+      .catch(function (error) {
+        console.error("Failed to save front of recipe card to PNG.");
         console.error(error);
       });
-    })
-    .catch(function(error){
-      console.error("Failed to save front of recipe card to PNG.");
-      console.error(error);
-    });
   }
 
   renderSteps() {
@@ -242,7 +272,7 @@ class App extends React.Component {
             <div className="columns">
               <div className="column is-two-fifths">
                 <h4
-                  className="title is-4 mb-4"
+                  className="title is-4 mb-4 pb-1"
                   style={{ borderBottom: "2px solid #363636" }}
                 >
                   Ingredients
@@ -301,54 +331,52 @@ class App extends React.Component {
         </section>
         <div className="badges">
           {this.state.vegetarian ? (
-            <span className="icon ml-2 pt-2">
+            <span className="icon ml-4 pt-5">
               <i className="fas fa-leaf fa-2x"></i>
             </span>
           ) : null}
           {this.state.gluten ? (
-            <span className="icon ml-2 pt-2">
+            <span className="icon ml-4 pt-5">
               <i className="fas fa-bread-slice fa-2x"></i>
             </span>
           ) : null}
           {this.state.lactose ? (
-            <span className="icon ml-2 pt-2">
+            <span className="icon ml-4 pt-5">
               <img src={milk} alt="Milk jug" />
             </span>
           ) : null}
           {this.state.seafood ? (
-            <span className="icon ml-2 pt-2">
+            <span className="icon ml-4 pt-5">
               <i className="fas fa-fish fa-2x"></i>
             </span>
           ) : null}
           {this.state.spicy ? (
-            <span className="icon ml-2 pt-2">
+            <span className="icon ml-4 pt-5">
               <i className="fas fa-pepper-hot fa-2x"></i>
             </span>
           ) : null}
         </div>
         <div className="tiled-info pl-4 pb-2">
-          <div>
+          <div className="pt-2">
             <span className="times">{this.state.prep}</span>
-            <span className="icon is-left ml-4 pr-4">
+            <span className="icon is-left ml-5 pr-6">
               <i className="fas fa-hands fa-2x"></i>
             </span>
           </div>
-          <div>
+          <div className="pt-2">
             <span className="times">{this.state.cook}</span>
-            <span className="icon is-left ml-4 pr-4">
+            <span className="icon is-left ml-5 pr-6">
               <i className="fas fa-fire fa-2x"></i>
             </span>
           </div>
-          <div>
+          <div className="pt-2">
             <span className="times">{this.state.servings}</span>
-            <span className="icon is-left ml-4 pr-4">
+            <span className="icon is-left ml-5 pr-6">
               <i className="fas fa-utensils fa-2x"></i>
             </span>
           </div>
         </div>
-        <div className="recipe-source">
-          {this.state.source}
-        </div>
+        <div className="recipe-source">{this.state.source}</div>
         <div className="built-by">
           Built by: https://github.com/reZach/recipe-cards
         </div>
@@ -434,180 +462,158 @@ class App extends React.Component {
         </section> */}
         <section className="section">
           <div className="container">
-            <div className="columns">
-              <div className="column is-half">
-                <form>
-                  <div className="field">
-                    <label className="label">Title</label>
-                    <div className="control">
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Recipe title"
-                        autoFocus={true}
-                        value={this.state.title}
-                        onChange={this.setTitle}
-                      />
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Description</label>
-                    <div className="control">
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Description of recipe"
-                        value={this.state.description}
-                        onChange={this.setDescription}
-                      />
-                    </div>
-                  </div>
-                  <div className="field is-horizontal">
-                    <div className="field-body">
-                      <div className="field">
-                        <p className="control is-expanded">
-                          <input
-                            className="input"
-                            type="text"
-                            placeholder="Prep time"
-                            value={this.state.prep}
-                            onChange={this.setPrep}
-                          />
-                        </p>
-                      </div>
-                      <div className="field">
-                        <p className="control is-expanded">
-                          <input
-                            className="input"
-                            type="text"
-                            placeholder="Cook time"
-                            value={this.state.cook}
-                            onChange={this.setCook}
-                          />
-                        </p>
-                      </div>
-                      <div className="field">
-                        <p className="control is-expanded">
-                          <input
-                            className="input"
-                            type="text"
-                            placeholder="Servings"
-                            value={this.state.servings}
-                            onChange={this.setServings}
-                          />
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Ingredients</label>
-                    <div className="control">
-                      <textarea
-                        className="textarea"
-                        placeholder="Recipe ingredients"
-                        value={this.state.ingredients}
-                        onChange={this.setIngredients}
-                      />
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Steps</label>
-                    <div className="control">
-                      {this.renderSteps()}
-                      <button
-                        className="button is-primary"
-                        onClick={this.addStep}
-                      >
-                        Add step
-                      </button>
-                      <button
-                        className="button is-danger"
-                        onClick={this.removeStep}
-                      >
-                        Remove step
-                      </button>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Source</label>
-                    <div className="control">
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Source of recipe"
-                        value={this.state.source}
-                        onChange={this.setSource}
-                      />
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={this.state.vegetarian}
-                        onChange={this.setVegetarian}
-                      />{" "}
-                      Vegetarian
-                    </label>
-                  </div>
-                  <div className="field">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={this.state.gluten}
-                        onChange={this.setGluten}
-                      />{" "}
-                      Gluten
-                    </label>
-                  </div>
-                  <div className="field">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={this.state.lactose}
-                        onChange={this.setLactose}
-                      />{" "}
-                      Lactose
-                    </label>
-                  </div>
-                  <div className="field">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={this.state.seafood}
-                        onChange={this.setSeafood}
-                      />{" "}
-                      Seafood
-                    </label>
-                  </div>
-                  <div className="field">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={this.state.spicy}
-                        onChange={this.setSpicy}
-                      />{" "}
-                      Spicy
-                    </label>
-                  </div>
-                </form>
+            <form>
+              <div className="field">
+                <label className="label">Title</label>
+                <div className="control">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Recipe title"
+                    autoFocus={true}
+                    value={this.state.title}
+                    onChange={this.setTitle}
+                  />
+                </div>
               </div>
-              <div className="column is-half">
-                <div className="container mb-2">
-                  Front
-                  {this.renderFrontPreview()}
+              <div className="field">
+                <label className="label">Description</label>
+                <div className="control">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Description of recipe"
+                    value={this.state.description}
+                    onChange={this.setDescription}
+                  />
                 </div>
-                <div className="container">
-                  Back
-                  {this.renderBackPreview()}
+              </div>
+              <div className="field is-horizontal">
+                <div className="field-body">
+                  <div className="field">
+                    <p className="control is-expanded">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Prep time"
+                        value={this.state.prep}
+                        onChange={this.setPrep}
+                      />
+                    </p>
+                  </div>
+                  <div className="field">
+                    <p className="control is-expanded">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Cook time"
+                        value={this.state.cook}
+                        onChange={this.setCook}
+                      />
+                    </p>
+                  </div>
+                  <div className="field">
+                    <p className="control is-expanded">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Servings"
+                        value={this.state.servings}
+                        onChange={this.setServings}
+                      />
+                    </p>
+                  </div>
                 </div>
-                <div className="container mt-4">
-                  <button className="button is-primary" onClick={this.download}>
-                    Download
+              </div>
+              <div className="field">
+                <label className="label">Ingredients</label>
+                <div className="control">
+                  <textarea
+                    className="textarea"
+                    placeholder="Recipe ingredients"
+                    value={this.state.ingredients}
+                    onChange={this.setIngredients}
+                  />
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Steps</label>
+                <div className="control">
+                  {this.renderSteps()}
+                  <button className="button is-primary" onClick={this.addStep}>
+                    Add step
+                  </button>
+                  <button
+                    className="button is-danger"
+                    onClick={this.removeStep}
+                  >
+                    Remove step
                   </button>
                 </div>
               </div>
-            </div>
+              <div className="field">
+                <label className="label">Source</label>
+                <div className="control">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Source of recipe"
+                    value={this.state.source}
+                    onChange={this.setSource}
+                  />
+                </div>
+              </div>
+              <div className="field">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={this.state.vegetarian}
+                    onChange={this.setVegetarian}
+                  />{" "}
+                  Vegetarian
+                </label>
+              </div>
+              <div className="field">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={this.state.gluten}
+                    onChange={this.setGluten}
+                  />{" "}
+                  Gluten
+                </label>
+              </div>
+              <div className="field">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={this.state.lactose}
+                    onChange={this.setLactose}
+                  />{" "}
+                  Lactose
+                </label>
+              </div>
+              <div className="field">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={this.state.seafood}
+                    onChange={this.setSeafood}
+                  />{" "}
+                  Seafood
+                </label>
+              </div>
+              <div className="field">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={this.state.spicy}
+                    onChange={this.setSpicy}
+                  />{" "}
+                  Spicy
+                </label>
+              </div>
+            </form>
           </div>
         </section>
         <section className="section">
@@ -625,6 +631,21 @@ class App extends React.Component {
                 www.flaticon.com
               </a>
             </div>
+          </div>
+        </section>
+        <section className="section">
+          <div className="container mb-2">
+            Front
+            {this.renderFrontPreview()}
+          </div>
+          <div className="container">
+            Back
+            {this.renderBackPreview()}
+          </div>
+          <div className="container mt-4">
+            <button className="button is-primary" onClick={this.download}>
+              Download
+            </button>
           </div>
         </section>
       </React.Fragment>
