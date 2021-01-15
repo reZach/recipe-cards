@@ -26,7 +26,30 @@ class App extends React.Component {
       spicy: false,
     };
 
-    this.recipeCardMargin = 9.525; // 0.25in margin on all sides (0.125in bleed + 0.125 safe margin) 
+    /*
+      For print:
+
+      1) Determine PDF size (ie. 6 x 3.5 inches)
+      2) Add 0.125" margin on all sides (color should extend to this boundary, this is the bleed of the print document).
+      
+      To determine inch to px conversion:
+        a) Get DPI of monitor (ie. visit https://dpi.lv/)
+        b) 1px = 25.4mm / dpi  (ie. 1px = 25.4mm / 166dpi == 1px = 0.15301 mm)
+
+      2-ctd)
+        a) For width. 6 inches + (0.125" * 2) = 6.25". Multiply inches by 25.4 to convert to mm (milimeters).
+        6.25 * 25.4 = 158.75mm
+        b) For height. 3.5 inches + (0.125" * 2) = 3.75". == 95.25mm
+        c) Convert mm to px, this becomes the width/height of your container.
+        d) Width = 158.75mm / 0.15301 == 1038px (round up to nearest px)
+        e) Height = 95.25mm / 0.15301 == 623px (round up to nearest px)
+      3) Add 0.125" padding INSIDE this container, all content should be WITHIN this padding.
+      Padding = 0.125" * 25.4mm == 3.175mm.
+      3.175mm / 0.15301 == 21px (round up to nearest px)
+      Padding becomes 21px.
+    */
+
+    this.recipeCardMargin = 3.175; // 0.125in margin on all sides (bleed)
     this.recipeCardWidth = 152.4 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 6in
     this.recipeCardHeight = 88.9 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 3.5in
 
@@ -166,9 +189,9 @@ class App extends React.Component {
     });
   }
 
+  // Do not scale zoom on page or else the output will be messed up
   download(event) {
     const _ = this;
-    const margin = this.recipeCardMargin;
     const width = this.recipeCardWidth;
     const height = this.recipeCardHeight;
 
@@ -184,20 +207,20 @@ class App extends React.Component {
             newPDF.addImage(
               frontImgData,
               "PNG",
-              margin,
-              margin,
-              width - margin * 2,
-              height - margin * 2
+              0,
+              0,
+              width,
+              height
             );
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(2);
             newPDF.addImage(
               backImgData,
               "PNG",
-              margin,
-              margin,
-              width - margin * 2,
-              height - margin * 2
+              0,
+              0,
+              width,
+              height
             );
 
             newPDF.addPage([width, height], "landscape");
@@ -205,20 +228,20 @@ class App extends React.Component {
             newPDF.addImage(
               frontImgData,
               "PNG",
-              margin,
-              margin,
-              width - margin * 2,
-              height - margin * 2
+              0,
+              0,
+              width,
+              height
             );
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(4);
             newPDF.addImage(
               backImgData,
               "PNG",
-              margin,
-              margin,
-              width - margin * 2,
-              height - margin * 2
+              0,
+              0,
+              width,
+              height
             );
 
             newPDF.save(
@@ -260,14 +283,14 @@ class App extends React.Component {
   renderFrontPreview() {
     return (
       <div className="container card-preview" id="js-front">
-        <section className="hero is-info">
-          <div className="hero-body pt-4 pb-4 pl-5 pr-5">
+        <section className="hero is-info" style={{padding: "47px 47px 0px 47px"}}>
+          <div className="hero-body pb-4">
             <div className="container">
               <h3 className="title is-3">{this.state.title}</h3>
             </div>
           </div>
         </section>
-        <section className="section pt-4 pb-0">
+        <section className="section pt-2" style={{paddingLeft: "47px", paddingRight: "47px", paddingBottom: "47px"}}>
           <div className="container">
             <div className="columns">
               <div className="column is-two-fifths">
@@ -292,7 +315,7 @@ class App extends React.Component {
                 >
                   Steps
                 </h4>
-                <ol type="1" className="pl-4">
+                <ol type="1" className="pl-6">
                   {this.state.steps.map((value, index, array) => {
                     return <li key={index}>{value}</li>;
                   })}
@@ -331,47 +354,47 @@ class App extends React.Component {
         </section>
         <div className="badges">
           {this.state.vegetarian ? (
-            <span className="icon ml-4 pt-5">
+            <span className="icon ml-5">
               <i className="fas fa-leaf fa-2x"></i>
             </span>
           ) : null}
           {this.state.gluten ? (
-            <span className="icon ml-4 pt-5">
+            <span className="icon ml-5">
               <i className="fas fa-bread-slice fa-2x"></i>
             </span>
           ) : null}
           {this.state.lactose ? (
-            <span className="icon ml-4 pt-5">
+            <span className="icon ml-5">
               <img src={milk} alt="Milk jug" />
             </span>
           ) : null}
           {this.state.seafood ? (
-            <span className="icon ml-4 pt-5">
+            <span className="icon ml-5">
               <i className="fas fa-fish fa-2x"></i>
             </span>
           ) : null}
           {this.state.spicy ? (
-            <span className="icon ml-4 pt-5">
+            <span className="icon ml-5">
               <i className="fas fa-pepper-hot fa-2x"></i>
             </span>
           ) : null}
         </div>
         <div className="tiled-info pl-4 pb-2">
           <div className="pt-2">
-            <span className="times">{this.state.prep}</span>
-            <span className="icon is-left ml-5 pr-6">
+            <span className="times pr-5">{this.state.prep}</span>
+            <span className="icon is-left">
               <i className="fas fa-hands fa-2x"></i>
             </span>
           </div>
           <div className="pt-2">
-            <span className="times">{this.state.cook}</span>
-            <span className="icon is-left ml-5 pr-6">
+            <span className="times pr-5">{this.state.cook}</span>
+            <span className="icon is-left">
               <i className="fas fa-fire fa-2x"></i>
             </span>
           </div>
           <div className="pt-2">
-            <span className="times">{this.state.servings}</span>
-            <span className="icon is-left ml-5 pr-6">
+            <span className="times pr-5">{this.state.servings}</span>
+            <span className="icon is-left">
               <i className="fas fa-utensils fa-2x"></i>
             </span>
           </div>
