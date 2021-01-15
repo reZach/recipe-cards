@@ -409,62 +409,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
-        <nav className="navbar" role="navigation" aria-label="main navigation">
-          <div className="navbar-brand">
-            <a className="navbar-item" href="/">
-              <img
-                src="https://bulma.io/images/bulma-logo.png"
-                width="112"
-                height="28"
-                alt="Bulma logo"
-              />
-            </a>
-
-            <a
-              role="button"
-              className="navbar-burger"
-              aria-label="menu"
-              aria-expanded="false"
-              data-target="navbarBasicExample"
-            >
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
-
-          <div id="navbarBasicExample" className="navbar-menu">
-            <div className="navbar-start">
-              <a className="navbar-item">Home</a>
-
-              <a className="navbar-item">Documentation</a>
-
-              <div className="navbar-item has-dropdown is-hoverable">
-                <a className="navbar-link">More</a>
-
-                <div className="navbar-dropdown">
-                  <a className="navbar-item">About</a>
-                  <a className="navbar-item">Jobs</a>
-                  <a className="navbar-item">Contact</a>
-                  <hr className="navbar-divider" />
-                  <a className="navbar-item">Report an issue</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="navbar-end">
-              <div className="navbar-item">
-                <div className="buttons">
-                  <a className="button is-primary">
-                    <strong>Sign up</strong>
-                  </a>
-                  <a className="button is-light">Log in</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
+      <React.Fragment>        
         <section className="hero is-primary">
           <div className="hero-body">
             <div className="container">
@@ -475,14 +420,23 @@ class App extends React.Component {
             </div>
           </div>
         </section>
-        {/* <section className="section">
+        <section className="section">
           <div className="container">
-            <h1 className="title">Hello World</h1>
-            <p className="subtitle">
-              My first website with <strong>Bulma</strong>!
+            <h1 className="title">Instructions (BETA)</h1>
+            <p>
+              Ensure your screen resolution is 1920 x 1080.<br />
+              Ensure you are at 100% zoom on this webpage.<br />
+              Enter in your recipe details and click the <strong>Download</strong> button below.<br />
+              (Optional) Take the resulting PDF to <a target="_blank" href="https://smartpress.com/offering/collated-printing">https://smartpress.com/offering/collated-printing</a>.<br />
+              (Optional) Change Sheets Per Set to <strong>2</strong>.<br />
+              (Optional) Change Total Number of Sets to <strong>1</strong>.<br />
+              (Optional) Choose an unfolded size of <strong>6"</strong> width, <strong>3.5"</strong> height.<br />
+              (Optional) Choose <strong>Full Color</strong> for Printing on Back.<br />
+              (Optional) Choose any other options you'd like, then place an order.<br />
+              (Optional) Order will consist of 2 of the same printed recipe card.
             </p>
           </div>
-        </section> */}
+        </section>
         <section className="section">
           <div className="container">
             <form>

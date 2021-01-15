@@ -62,7 +62,6 @@
 
 .badges {
   position: absolute;
-  width: 200px;
   top: 51px;
   left: 29px; /* accounts additional ml-5 css class on icons */
   text-align: left;
