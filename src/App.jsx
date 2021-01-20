@@ -11,6 +11,12 @@ class App extends React.Component {
     super();
 
     this.state = {
+      dpi: 0,
+      showMonitorSelector: false,
+      brand: "",
+      name: "",
+      diagonal: 0,
+
       title: "",
       description: "",
       prep: "",
@@ -53,6 +59,22 @@ class App extends React.Component {
     this.recipeCardWidth = 152.4 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 6in
     this.recipeCardHeight = 88.9 + this.recipeCardMargin * 2; // "mm" (jsPDF) unit = 3.5in
 
+    this.monitorList = [
+      {
+        brand: "ASUS",
+        name: "VG248QE",
+        diagonal: 24,
+      },
+    ];
+
+    this.calculateDPI = this.calculateDPI.bind(this);
+    this.calculateDPI();
+    this.setShowMonitorSelector = this.setShowMonitorSelector.bind(this);
+
+    this.generateBrandOptions = this.generateBrandOptions.bind(this);
+    this.generateNameOptions = this.generateNameOptions.bind(this);
+    this.generateDiagonalOptions = this.generateDiagonalOptions.bind(this);
+
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
     this.setIngredients = this.setIngredients.bind(this);
@@ -73,6 +95,46 @@ class App extends React.Component {
     this.renderFrontPreview = this.renderFrontPreview.bind(this);
     this.renderBackPreview = this.renderBackPreview.bind(this);
   }
+
+  calculateDPI() {
+    // Based off of code from https://dpi.lv/
+    const dppx =
+      window.devicePixelRatio ||
+      (window.matchMedia &&
+      window.matchMedia(
+        "(min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)"
+      ).matches
+        ? 2
+        : 1) ||
+      1;
+
+    const width = window.screen.width * dppx;
+    const height = window.screen.height * dppx;
+    const c = Math.sqrt(width * width + height * height);
+    const dpi = Math.ceil((c / this.monitorList[0].diagonal) * 10) / 10;
+    console.log("DPI is " + dpi);
+  }
+
+  setShowMonitorSelector(event) {
+    const checked = event.target.checked;
+    this.setState({
+      showMonitorSelector: checked,
+    });
+  }
+
+  generateBrandOptions() {
+    let brands = this.monitorList.map((m, i) => (
+      <option key={i}>{m.brand}</option>
+    ));
+    brands.unshift(<option key={-1} value="">Select a brand</option>);
+    
+    return brands;
+  }
+
+  generateNameOptions(){
+  }
+
+  generateDiagonalOptions(){}
 
   setTitle(event) {
     const value = event.target.value;
@@ -204,45 +266,17 @@ class App extends React.Component {
               format: [width, height],
               compress: true,
             });
-            newPDF.addImage(
-              frontImgData,
-              "PNG",
-              0,
-              0,
-              width,
-              height
-            );
+            newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(2);
-            newPDF.addImage(
-              backImgData,
-              "PNG",
-              0,
-              0,
-              width,
-              height
-            );
+            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
 
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(3);
-            newPDF.addImage(
-              frontImgData,
-              "PNG",
-              0,
-              0,
-              width,
-              height
-            );
+            newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(4);
-            newPDF.addImage(
-              backImgData,
-              "PNG",
-              0,
-              0,
-              width,
-              height
-            );
+            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
 
             newPDF.save(
               `${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`
@@ -283,14 +317,24 @@ class App extends React.Component {
   renderFrontPreview() {
     return (
       <div className="container card-preview" id="js-front">
-        <section className="hero is-info" style={{padding: "47px 47px 0px 47px"}}>
+        <section
+          className="hero is-info"
+          style={{ padding: "47px 47px 0px 47px" }}
+        >
           <div className="hero-body pb-4">
             <div className="container">
               <h3 className="title is-3">{this.state.title}</h3>
             </div>
           </div>
         </section>
-        <section className="section pt-2" style={{paddingLeft: "47px", paddingRight: "47px", paddingBottom: "47px"}}>
+        <section
+          className="section pt-2"
+          style={{
+            paddingLeft: "47px",
+            paddingRight: "47px",
+            paddingBottom: "47px",
+          }}
+        >
           <div className="container">
             <div className="columns">
               <div className="column is-two-fifths">
@@ -409,7 +453,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <React.Fragment>        
+      <React.Fragment>
         <section className="hero is-primary">
           <div className="hero-body">
             <div className="container">
@@ -424,22 +468,96 @@ class App extends React.Component {
           <div className="container">
             <h1 className="title">Instructions (BETA)</h1>
             <p>
-              Ensure your screen resolution is 1920 x 1080.<br />
-              Ensure you are at 100% zoom on this webpage.<br />
-              Enter in your recipe details and click the <strong>Download</strong> button below.<br />
-              (Optional) Take the resulting PDF to <a target="_blank" href="https://smartpress.com/offering/collated-printing">https://smartpress.com/offering/collated-printing</a>.<br />
+              Ensure your screen resolution is 1920 x 1080.
+              <br />
+              Ensure you are at 100% zoom on this webpage.
+              <br />
+              Enter in your recipe details and click the{" "}
+              <strong>Download</strong> button below.
+              <br />
+              (Optional) Take the resulting PDF to{" "}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://smartpress.com/offering/collated-printing"
+              >
+                https://smartpress.com/offering/collated-printing
+              </a>
+              .<br />
               (Optional) Change Sheets Per Set to <strong>2</strong>.<br />
-              (Optional) Change Total Number of Sets to <strong>1</strong>.<br />
-              (Optional) Choose an unfolded size of <strong>6"</strong> width, <strong>3.5"</strong> height.<br />
-              (Optional) Choose <strong>Full Color</strong> for Printing on Back.<br />
-              (Optional) Choose any other options you'd like, then place an order.<br />
-              (Optional) Order will consist of 2 of the same printed recipe card.
+              (Optional) Change Total Number of Sets to <strong>1</strong>.
+              <br />
+              (Optional) Choose an unfolded size of <strong>
+                6"
+              </strong> width, <strong>3.5"</strong> height.
+              <br />
+              (Optional) Choose <strong>Full Color</strong> for Printing on
+              Back.
+              <br />
+              (Optional) Choose any other options you'd like, then place an
+              order.
+              <br />
+              (Optional) Order will consist of 2 of the same printed recipe
+              card.
             </p>
           </div>
         </section>
         <section className="section">
           <div className="container">
             <form>
+              <div className="field">
+                <div className="control">
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={this.state.showMonitorSelector}
+                      onClick={this.setShowMonitorSelector}
+                    />{" "}
+                    Show monitor options
+                  </label>
+                </div>
+              </div>
+              {this.state.showMonitorSelector ? (
+                <React.Fragment>
+                  <div className="field">
+                    <label className="label">Brand</label>
+                    <div className="control">
+                      <div className="select">
+                        <select>
+                          {this.generateBrandOptions()}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Name</label>
+                    <div className="control">
+                      <div className="select">
+                        <select>
+                          <option>Select dropdown</option>
+                          <option>With options</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Diagonal</label>
+                    <div className="control">
+                      <div className="select">
+                        <select>
+                          <option>Select dropdown</option>
+                          <option>With options</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">
+                      Screen DPI: {this.state.dpi}
+                    </label>
+                  </div>
+                </React.Fragment>
+              ) : null}
               <div className="field">
                 <label className="label">Title</label>
                 <div className="control">
