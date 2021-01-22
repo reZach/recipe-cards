@@ -71,6 +71,9 @@ class App extends React.Component {
     this.calculateDPI();
     this.setShowMonitorSelector = this.setShowMonitorSelector.bind(this);
 
+    this.setBrand = this.setBrand.bind(this);
+    this.setName = this.setName.bind(this);
+    this.setDiagonal = this.setDiagonal.bind(this);
     this.generateBrandOptions = this.generateBrandOptions.bind(this);
     this.generateNameOptions = this.generateNameOptions.bind(this);
     this.generateDiagonalOptions = this.generateDiagonalOptions.bind(this);
@@ -112,7 +115,7 @@ class App extends React.Component {
     const height = window.screen.height * dppx;
     const c = Math.sqrt(width * width + height * height);
     const dpi = Math.ceil((c / this.monitorList[0].diagonal) * 10) / 10;
-    console.log("DPI is " + dpi);
+    return dpi;
   }
 
   setShowMonitorSelector(event) {
@@ -122,19 +125,81 @@ class App extends React.Component {
     });
   }
 
+  setBrand(event) {
+    const value = event.target.value;
+    this.setState({
+      brand: value,
+      name: "",
+      diagonal: ""
+    });
+  }
+
+  setName(event){
+    const value = event.target.value;
+    this.setState({
+      name: value,
+      diagonal: ""
+    });
+  }
+
+  setDiagonal(event){
+    const value = event.target.value;
+    this.setState({
+      diagonal: value,
+      dpi: this.calculateDPI()
+    });
+  }
+
   generateBrandOptions() {
     let brands = this.monitorList.map((m, i) => (
-      <option key={i}>{m.brand}</option>
+      <option key={i} value={m.brand}>
+        {m.brand}
+      </option>
     ));
-    brands.unshift(<option key={-1} value="">Select a brand</option>);
-    
+    brands.unshift(
+      <option key={-1} value="">
+        Select a brand
+      </option>
+    );
+
     return brands;
   }
 
-  generateNameOptions(){
+  generateNameOptions() {
+    let names = this.monitorList
+      .filter((m) => m.brand === this.state.brand)
+      .map((m, i) => (
+        <option key={i} value={m.name}>
+          {m.name}
+        </option>
+      ));
+
+      names.unshift(
+      <option key={-1} value="">
+        Select a name
+      </option>
+    );
+
+    return names;
   }
 
-  generateDiagonalOptions(){}
+  generateDiagonalOptions() {
+    let diagonals = this.monitorList
+      .filter((m) => m.brand === this.state.brand && m.name === this.state.name)
+      .map((m, i) => (
+        <option key={i} value={m.diagonal}>
+          {m.diagonal}
+        </option>
+      ));
+
+      diagonals.unshift(
+      <option key={-1} value="0">
+        Select a diagonal
+      </option>
+    );
+
+    return diagonals;
+  }
 
   setTitle(event) {
     const value = event.target.value;
@@ -523,7 +588,7 @@ class App extends React.Component {
                     <label className="label">Brand</label>
                     <div className="control">
                       <div className="select">
-                        <select>
+                        <select onChange={this.setBrand} value={this.state.brand}>
                           {this.generateBrandOptions()}
                         </select>
                       </div>
@@ -533,9 +598,8 @@ class App extends React.Component {
                     <label className="label">Name</label>
                     <div className="control">
                       <div className="select">
-                        <select>
-                          <option>Select dropdown</option>
-                          <option>With options</option>
+                        <select onChange={this.setName} value={this.state.name} disabled={this.state.brand === ""}>
+                          {this.generateNameOptions()}
                         </select>
                       </div>
                     </div>
@@ -544,9 +608,8 @@ class App extends React.Component {
                     <label className="label">Diagonal</label>
                     <div className="control">
                       <div className="select">
-                        <select>
-                          <option>Select dropdown</option>
-                          <option>With options</option>
+                        <select onChange={this.setDiagonal} value={this.state.diagonal} disabled={this.state.name === ""}>
+                          {this.generateDiagonalOptions()}
                         </select>
                       </div>
                     </div>
