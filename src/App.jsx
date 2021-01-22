@@ -16,6 +16,8 @@ class App extends React.Component {
       brand: "",
       name: "",
       diagonal: 0,
+      width: 6,
+      height: 4,
 
       title: "",
       description: "",
@@ -77,6 +79,8 @@ class App extends React.Component {
     this.generateBrandOptions = this.generateBrandOptions.bind(this);
     this.generateNameOptions = this.generateNameOptions.bind(this);
     this.generateDiagonalOptions = this.generateDiagonalOptions.bind(this);
+    this.setHeight = this.setHeight.bind(this);
+    this.setWidth = this.setWidth.bind(this);
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
@@ -130,23 +134,23 @@ class App extends React.Component {
     this.setState({
       brand: value,
       name: "",
-      diagonal: ""
+      diagonal: "",
     });
   }
 
-  setName(event){
+  setName(event) {
     const value = event.target.value;
     this.setState({
       name: value,
-      diagonal: ""
+      diagonal: "",
     });
   }
 
-  setDiagonal(event){
+  setDiagonal(event) {
     const value = event.target.value;
     this.setState({
       diagonal: value,
-      dpi: this.calculateDPI()
+      dpi: this.calculateDPI(),
     });
   }
 
@@ -174,7 +178,7 @@ class App extends React.Component {
         </option>
       ));
 
-      names.unshift(
+    names.unshift(
       <option key={-1} value="">
         Select a name
       </option>
@@ -192,13 +196,27 @@ class App extends React.Component {
         </option>
       ));
 
-      diagonals.unshift(
+    diagonals.unshift(
       <option key={-1} value="0">
         Select a diagonal
       </option>
     );
 
     return diagonals;
+  }
+
+  setHeight(event) {
+    const value = event.target.value;
+    this.setState({
+      height: value,
+    });
+  }
+
+  setWidth(event) {
+    const value = event.target.value;
+    this.setState({
+      width: value,
+    });
   }
 
   setTitle(event) {
@@ -322,7 +340,28 @@ class App extends React.Component {
     const width = this.recipeCardWidth;
     const height = this.recipeCardHeight;
 
-    toPng(document.getElementById("js-front"))
+    // dynamic calc size
+    var p = 25.4 / this.state.dpi;
+    var w = Math.round(((this.state.width + 0.125 * 2) * 25.4) / p);
+    var h = Math.round(((this.state.height + 0.125 * 2) * 25.4) / p);
+    //debugger;
+
+    // dynamic size test
+    // toPng(document.getElementById("js-front"), {
+    //   width: w,
+    //   height: h,
+    // })
+    //   .then(function (frontImgData) {
+    //     var img = new Image();
+    //     img.src = frontImgData;
+    //     document.body.appendChild(img);
+    //   })
+    //   .catch(function (error) {
+    //     console.error("Failed to save front of recipe card to PNG.");
+    //     console.error(error);
+    //   });
+
+    toPng(document.getElementById("js-front"), {})
       .then(function (frontImgData) {
         toPng(document.getElementById("js-back"))
           .then(function (backImgData) {
@@ -588,7 +627,10 @@ class App extends React.Component {
                     <label className="label">Brand</label>
                     <div className="control">
                       <div className="select">
-                        <select onChange={this.setBrand} value={this.state.brand}>
+                        <select
+                          onChange={this.setBrand}
+                          value={this.state.brand}
+                        >
                           {this.generateBrandOptions()}
                         </select>
                       </div>
@@ -598,7 +640,11 @@ class App extends React.Component {
                     <label className="label">Name</label>
                     <div className="control">
                       <div className="select">
-                        <select onChange={this.setName} value={this.state.name} disabled={this.state.brand === ""}>
+                        <select
+                          onChange={this.setName}
+                          value={this.state.name}
+                          disabled={this.state.brand === ""}
+                        >
                           {this.generateNameOptions()}
                         </select>
                       </div>
@@ -608,7 +654,11 @@ class App extends React.Component {
                     <label className="label">Diagonal</label>
                     <div className="control">
                       <div className="select">
-                        <select onChange={this.setDiagonal} value={this.state.diagonal} disabled={this.state.name === ""}>
+                        <select
+                          onChange={this.setDiagonal}
+                          value={this.state.diagonal}
+                          disabled={this.state.name === ""}
+                        >
                           {this.generateDiagonalOptions()}
                         </select>
                       </div>
@@ -771,24 +821,36 @@ class App extends React.Component {
                   Spicy
                 </label>
               </div>
+              <div className="field">
+                <label className="label">Card size (width" by height")</label>
+              </div>
+              <div className="field is-horizontal">
+                <div className="field-body">
+                  <div className="field">
+                    <p className="control is-expanded">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Width"
+                        value={this.state.width}
+                        onChange={this.setWidth}
+                      />
+                    </p>
+                  </div>
+                  <div className="field">
+                    <p className="control is-expanded">
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Height"
+                        value={this.state.height}
+                        onChange={this.setHeight}
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
             </form>
-          </div>
-        </section>
-        <section className="section">
-          <div className="container">
-            <div>
-              Milk icon made by{" "}
-              <a
-                href="https://www.flaticon.com/authors/freepik"
-                title="Freepik"
-              >
-                Freepik
-              </a>{" "}
-              from{" "}
-              <a href="https://www.flaticon.com/" title="Flaticon">
-                www.flaticon.com
-              </a>
-            </div>
           </div>
         </section>
         <section className="section">
@@ -804,6 +866,16 @@ class App extends React.Component {
             <button className="button is-primary" onClick={this.download}>
               Download
             </button>
+          </div>
+          <div className="mt-4">
+            Milk icon made by{" "}
+            <a href="https://www.flaticon.com/authors/freepik" title="Freepik">
+              Freepik
+            </a>{" "}
+            from{" "}
+            <a href="https://www.flaticon.com/" title="Flaticon">
+              www.flaticon.com
+            </a>
           </div>
         </section>
       </React.Fragment>
