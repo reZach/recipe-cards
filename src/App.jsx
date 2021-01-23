@@ -373,14 +373,7 @@ class App extends React.Component {
             newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(2);
-            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
-
-            newPDF.addPage([width, height], "landscape");
-            newPDF.setPage(3);
-            newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
-            newPDF.addPage([width, height], "landscape");
-            newPDF.setPage(4);
-            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
+            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);            
 
             newPDF.save(
               `${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`
