@@ -15,9 +15,11 @@ class App extends React.Component {
       showMonitorSelector: false,
       brand: "",
       name: "",
-      diagonal: 0,
-      width: 6,
-      height: 4,
+      diagonal: "",
+      exportWidth: 6, // width of exported pdf in inches
+      exportHeight: 3.5, // height of exported pdf in inches
+      width: 0, // width of preview in px
+      height: 0, // height of preview in px
 
       title: "",
       description: "",
@@ -70,8 +72,8 @@ class App extends React.Component {
     ];
 
     this.calculateDPI = this.calculateDPI.bind(this);
-    this.calculateDPI();
     this.setShowMonitorSelector = this.setShowMonitorSelector.bind(this);
+    this.updateContainers = this.updateContainers.bind(this);
 
     this.setBrand = this.setBrand.bind(this);
     this.setName = this.setName.bind(this);
@@ -79,8 +81,8 @@ class App extends React.Component {
     this.generateBrandOptions = this.generateBrandOptions.bind(this);
     this.generateNameOptions = this.generateNameOptions.bind(this);
     this.generateDiagonalOptions = this.generateDiagonalOptions.bind(this);
-    this.setHeight = this.setHeight.bind(this);
-    this.setWidth = this.setWidth.bind(this);
+    this.setExportHeight = this.setExportHeight.bind(this);
+    this.setExportWidth = this.setExportWidth.bind(this);
 
     this.setTitle = this.setTitle.bind(this);
     this.setDescription = this.setDescription.bind(this);
@@ -103,8 +105,8 @@ class App extends React.Component {
     this.renderBackPreview = this.renderBackPreview.bind(this);
   }
 
-  calculateDPI() {
-    // Based off of code from https://dpi.lv/
+  // Based off of code from https://dpi.lv/
+  calculateDPI() {    
     const dppx =
       window.devicePixelRatio ||
       (window.matchMedia &&
@@ -129,6 +131,24 @@ class App extends React.Component {
     });
   }
 
+  // Updates preview windows of the cards based on the size
+  // of the exported file
+  updateContainers(newValue){
+    if (isNaN(parseFloat(newValue))){
+      return;
+    }
+
+    // dynamic calc size
+    const p = 25.4 / this.state.dpi;
+    const w = Math.round(((parseFloat(this.state.exportWidth) + 0.125 * 2) * 25.4) / p);
+    const h = Math.round(((parseFloat(this.state.exportHeight) + 0.125 * 2) * 25.4) / p);
+
+    this.setState({
+      width: w,
+      height: h,
+    });
+  }
+
   setBrand(event) {
     const value = event.target.value;
     this.setState({
@@ -148,10 +168,11 @@ class App extends React.Component {
 
   setDiagonal(event) {
     const value = event.target.value;
+
     this.setState({
       diagonal: value,
-      dpi: this.calculateDPI(),
-    });
+      dpi: this.calculateDPI()
+    }, () => this.updateContainers(1));
   }
 
   generateBrandOptions() {
@@ -205,18 +226,20 @@ class App extends React.Component {
     return diagonals;
   }
 
-  setHeight(event) {
+  setExportHeight(event) {  
     const value = event.target.value;
+
     this.setState({
-      height: value,
-    });
+      exportHeight: value,
+    }, () => this.updateContainers(value));
   }
 
-  setWidth(event) {
+  setExportWidth(event) {
     const value = event.target.value;
+
     this.setState({
-      width: value,
-    });
+      exportWidth: value,
+    }, () => this.updateContainers(value));   
   }
 
   setTitle(event) {
@@ -337,29 +360,8 @@ class App extends React.Component {
   // Do not scale zoom on page or else the output will be messed up
   download(event) {
     const _ = this;
-    const width = this.recipeCardWidth;
-    const height = this.recipeCardHeight;
-
-    // dynamic calc size
-    var p = 25.4 / this.state.dpi;
-    var w = Math.round(((this.state.width + 0.125 * 2) * 25.4) / p);
-    var h = Math.round(((this.state.height + 0.125 * 2) * 25.4) / p);
-    //debugger;
-
-    // dynamic size test
-    // toPng(document.getElementById("js-front"), {
-    //   width: w,
-    //   height: h,
-    // })
-    //   .then(function (frontImgData) {
-    //     var img = new Image();
-    //     img.src = frontImgData;
-    //     document.body.appendChild(img);
-    //   })
-    //   .catch(function (error) {
-    //     console.error("Failed to save front of recipe card to PNG.");
-    //     console.error(error);
-    //   });
+    const width = _.state.width * (25.4 / _.state.dpi); // convert px to mm
+    const height = _.state.height * (25.4 / _.state.dpi); // convert px to mm
 
     toPng(document.getElementById("js-front"), {})
       .then(function (frontImgData) {
@@ -373,7 +375,7 @@ class App extends React.Component {
             newPDF.addImage(frontImgData, "PNG", 0, 0, width, height);
             newPDF.addPage([width, height], "landscape");
             newPDF.setPage(2);
-            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);            
+            newPDF.addImage(backImgData, "PNG", 0, 0, width, height);
 
             newPDF.save(
               `${_.state.title ? _.state.title : "Blank"} - RecipeCard.pdf`
@@ -413,7 +415,14 @@ class App extends React.Component {
 
   renderFrontPreview() {
     return (
-      <div className="container card-preview" id="js-front">
+      <div
+        className="container card-preview"
+        id="js-front"
+        style={{
+          width: this.state.width * 2 + "px",
+          height: this.state.height * 2 + "px",
+        }}
+      >
         <section
           className="hero is-info"
           style={{ padding: "47px 47px 0px 47px" }}
@@ -471,7 +480,14 @@ class App extends React.Component {
 
   renderBackPreview() {
     return (
-      <div className="container card-preview" id="js-back">
+      <div
+        className="container card-preview"
+        id="js-back"
+        style={{
+          width: this.state.width * 2 + "px",
+          height: this.state.height * 2 + "px",
+        }}
+      >
         <section className="hero is-info is-fullheight">
           <div className="hero-body pl-0 pr-0">
             <div
@@ -607,7 +623,7 @@ class App extends React.Component {
                   <label className="checkbox">
                     <input
                       type="checkbox"
-                      checked={this.state.showMonitorSelector}
+                      defaultChecked={this.state.showMonitorSelector}
                       onClick={this.setShowMonitorSelector}
                     />{" "}
                     Show monitor options
@@ -814,6 +830,13 @@ class App extends React.Component {
                   Spicy
                 </label>
               </div>
+            </form>
+          </div>
+        </section>
+        <section className="section">
+          <div className="container mb-2">
+            <h2 className="title is-2">Preview</h2>
+            <form>
               <div className="field">
                 <label className="label">Card size (width" by height")</label>
               </div>
@@ -825,8 +848,8 @@ class App extends React.Component {
                         className="input"
                         type="text"
                         placeholder="Width"
-                        value={this.state.width}
-                        onChange={this.setWidth}
+                        value={this.state.exportWidth}
+                        onChange={this.setExportWidth}
                       />
                     </p>
                   </div>
@@ -836,8 +859,8 @@ class App extends React.Component {
                         className="input"
                         type="text"
                         placeholder="Height"
-                        value={this.state.height}
-                        onChange={this.setHeight}
+                        value={this.state.exportHeight}
+                        onChange={this.setExportHeight}
                       />
                     </p>
                   </div>
@@ -845,8 +868,6 @@ class App extends React.Component {
               </div>
             </form>
           </div>
-        </section>
-        <section className="section">
           <div className="container mb-2">
             Front
             {this.renderFrontPreview()}
