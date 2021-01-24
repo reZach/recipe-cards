@@ -10,12 +10,25 @@ class App extends React.Component {
   constructor() {
     super();
 
+    this.colors = [
+      "Teal",
+      "Softblue",      
+      "Green",
+      "Blue",
+      "Yellow",
+      "Pink",
+      "Light",
+      "Dark",
+    ];
+
     this.state = {
       dpi: 0,
       showMonitorSelector: false,
       brand: "",
       name: "",
       diagonal: "",
+      color: this.colors[1],
+      bulmaColor: "is-info", // bulma.io equivalent of selected color
       exportWidth: 6, // width of exported pdf in inches
       exportHeight: 3.5, // height of exported pdf in inches
       width: 0, // width of preview in px
@@ -81,6 +94,8 @@ class App extends React.Component {
     this.generateBrandOptions = this.generateBrandOptions.bind(this);
     this.generateNameOptions = this.generateNameOptions.bind(this);
     this.generateDiagonalOptions = this.generateDiagonalOptions.bind(this);
+    this.generateColorOptions = this.generateColorOptions.bind(this);
+    this.setColor = this.setColor.bind(this);
     this.setExportHeight = this.setExportHeight.bind(this);
     this.setExportWidth = this.setExportWidth.bind(this);
 
@@ -231,6 +246,49 @@ class App extends React.Component {
     );
 
     return diagonals;
+  }
+
+  generateColorOptions() {
+    let colors = this.colors.map((c, i) => (
+      <option key={i} value={c}>
+        {c}
+      </option>
+    ));
+
+    colors.unshift(
+      <option key={-1} value="0">
+        Select a color
+      </option>
+    );
+
+    return colors;
+  }
+
+  setColor(event) {
+    const value = event.target.value;
+    const cssClass =
+    value === this.colors[0]
+        ? "is-primary"
+        : value === this.colors[1]
+        ? "is-info"
+        : value === this.colors[2]
+        ? "is-success"
+        : value === this.colors[3]
+        ? "is-link"
+        : value === this.colors[4]
+        ? "is-warning"
+        : value === this.colors[5]
+        ? "is-danger"
+        : value === this.colors[6]
+        ? "is-light"
+        : value === this.colors[7]
+        ? "is-dark"
+        : "";
+
+    this.setState({
+      color: value,
+      bulmaColor: cssClass
+    });
   }
 
   setExportHeight(event) {
@@ -427,6 +485,8 @@ class App extends React.Component {
   }
 
   renderFrontPreview() {
+    
+
     return (
       <div
         className="container card-preview"
@@ -437,7 +497,7 @@ class App extends React.Component {
         }}
       >
         <section
-          className="hero is-info"
+          className={`hero ${this.state.bulmaColor}`}
           style={{ padding: "47px 47px 0px 47px" }}
         >
           <div className="hero-body pb-4">
@@ -501,7 +561,7 @@ class App extends React.Component {
           height: this.state.height * 2 + "px",
         }}
       >
-        <section className="hero is-info is-fullheight">
+        <section className={`hero ${this.state.bulmaColor} is-fullheight`}>
           <div className="hero-body pl-0 pr-0">
             <div
               className="container"
@@ -851,6 +911,16 @@ class App extends React.Component {
                 </React.Fragment>
               ) : null}
               <div className="field">
+                <label className="label">Color</label>
+                <div className="control">
+                  <div className="select">
+                    <select onChange={this.setColor} value={this.state.color}>
+                      {this.generateColorOptions()}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="field">
                 <label className="label">Card size (width" by height")</label>
               </div>
               <div className="field is-horizontal">
@@ -878,7 +948,7 @@ class App extends React.Component {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div>              
             </form>
           </div>
           <div className="container mb-2">
