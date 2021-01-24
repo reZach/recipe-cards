@@ -106,7 +106,7 @@ class App extends React.Component {
   }
 
   // Based off of code from https://dpi.lv/
-  calculateDPI() {    
+  calculateDPI() {
     const dppx =
       window.devicePixelRatio ||
       (window.matchMedia &&
@@ -133,15 +133,19 @@ class App extends React.Component {
 
   // Updates preview windows of the cards based on the size
   // of the exported file
-  updateContainers(newValue){
-    if (isNaN(parseFloat(newValue))){
+  updateContainers(newValue) {
+    if (isNaN(parseFloat(newValue))) {
       return;
     }
 
     // dynamic calc size
     const p = 25.4 / this.state.dpi;
-    const w = Math.round(((parseFloat(this.state.exportWidth) + 0.125 * 2) * 25.4) / p);
-    const h = Math.round(((parseFloat(this.state.exportHeight) + 0.125 * 2) * 25.4) / p);
+    const w = Math.round(
+      ((parseFloat(this.state.exportWidth) + 0.125 * 2) * 25.4) / p
+    );
+    const h = Math.round(
+      ((parseFloat(this.state.exportHeight) + 0.125 * 2) * 25.4) / p
+    );
 
     this.setState({
       width: w,
@@ -169,10 +173,13 @@ class App extends React.Component {
   setDiagonal(event) {
     const value = event.target.value;
 
-    this.setState({
-      diagonal: value,
-      dpi: this.calculateDPI()
-    }, () => this.updateContainers(1));
+    this.setState(
+      {
+        diagonal: value,
+        dpi: this.calculateDPI(),
+      },
+      () => this.updateContainers(1)
+    );
   }
 
   generateBrandOptions() {
@@ -226,20 +233,26 @@ class App extends React.Component {
     return diagonals;
   }
 
-  setExportHeight(event) {  
+  setExportHeight(event) {
     const value = event.target.value;
 
-    this.setState({
-      exportHeight: value,
-    }, () => this.updateContainers(value));
+    this.setState(
+      {
+        exportHeight: value,
+      },
+      () => this.updateContainers(value)
+    );
   }
 
   setExportWidth(event) {
     const value = event.target.value;
 
-    this.setState({
-      exportWidth: value,
-    }, () => this.updateContainers(value));   
+    this.setState(
+      {
+        exportWidth: value,
+      },
+      () => this.updateContainers(value)
+    );
   }
 
   setTitle(event) {
@@ -619,68 +632,6 @@ class App extends React.Component {
           <div className="container">
             <form>
               <div className="field">
-                <div className="control">
-                  <label className="checkbox">
-                    <input
-                      type="checkbox"
-                      defaultChecked={this.state.showMonitorSelector}
-                      onClick={this.setShowMonitorSelector}
-                    />{" "}
-                    Show monitor options
-                  </label>
-                </div>
-              </div>
-              {this.state.showMonitorSelector ? (
-                <React.Fragment>
-                  <div className="field">
-                    <label className="label">Brand</label>
-                    <div className="control">
-                      <div className="select">
-                        <select
-                          onChange={this.setBrand}
-                          value={this.state.brand}
-                        >
-                          {this.generateBrandOptions()}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Name</label>
-                    <div className="control">
-                      <div className="select">
-                        <select
-                          onChange={this.setName}
-                          value={this.state.name}
-                          disabled={this.state.brand === ""}
-                        >
-                          {this.generateNameOptions()}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">Diagonal</label>
-                    <div className="control">
-                      <div className="select">
-                        <select
-                          onChange={this.setDiagonal}
-                          value={this.state.diagonal}
-                          disabled={this.state.name === ""}
-                        >
-                          {this.generateDiagonalOptions()}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="label">
-                      Screen DPI: {this.state.dpi}
-                    </label>
-                  </div>
-                </React.Fragment>
-              ) : null}
-              <div className="field">
                 <label className="label">Title</label>
                 <div className="control">
                   <input
@@ -837,6 +788,68 @@ class App extends React.Component {
           <div className="container mb-2">
             <h2 className="title is-2">Preview</h2>
             <form>
+              <div className="field">
+                <div className="control">
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      defaultChecked={this.state.showMonitorSelector}
+                      onClick={this.setShowMonitorSelector}
+                    />{" "}
+                    Show monitor options
+                  </label>
+                </div>
+              </div>
+              {this.state.showMonitorSelector ? (
+                <React.Fragment>
+                  <div className="field">
+                    <label className="label">Brand</label>
+                    <div className="control">
+                      <div className="select">
+                        <select
+                          onChange={this.setBrand}
+                          value={this.state.brand}
+                        >
+                          {this.generateBrandOptions()}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Name</label>
+                    <div className="control">
+                      <div className="select">
+                        <select
+                          onChange={this.setName}
+                          value={this.state.name}
+                          disabled={this.state.brand === ""}
+                        >
+                          {this.generateNameOptions()}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Diagonal</label>
+                    <div className="control">
+                      <div className="select">
+                        <select
+                          onChange={this.setDiagonal}
+                          value={this.state.diagonal}
+                          disabled={this.state.name === ""}
+                        >
+                          {this.generateDiagonalOptions()}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">
+                      Screen DPI: {this.state.dpi}
+                    </label>
+                  </div>
+                </React.Fragment>
+              ) : null}
               <div className="field">
                 <label className="label">Card size (width" by height")</label>
               </div>
