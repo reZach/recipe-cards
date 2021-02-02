@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/recipe-cards/static/css/main.b60e2ac3.chunk.css",
-    "main.js": "/recipe-cards/static/js/main.75ec5e94.chunk.js",
-    "main.js.map": "/recipe-cards/static/js/main.75ec5e94.chunk.js.map",
+    "main.css": "/recipe-cards/static/css/main.b0a779ed.chunk.css",
+    "main.js": "/recipe-cards/static/js/main.c7d6b7c6.chunk.js",
+    "main.js.map": "/recipe-cards/static/js/main.c7d6b7c6.chunk.js.map",
     "runtime-main.js": "/recipe-cards/static/js/runtime-main.eebdb374.js",
     "runtime-main.js.map": "/recipe-cards/static/js/runtime-main.eebdb374.js.map",
     "static/js/2.8c4793ec.chunk.js": "/recipe-cards/static/js/2.8c4793ec.chunk.js",
     "static/js/2.8c4793ec.chunk.js.map": "/recipe-cards/static/js/2.8c4793ec.chunk.js.map",
     "static/css/3.1f785abf.chunk.css": "/recipe-cards/static/css/3.1f785abf.chunk.css",
-    "static/js/3.b5af7fbe.chunk.js": "/recipe-cards/static/js/3.b5af7fbe.chunk.js",
-    "static/js/3.b5af7fbe.chunk.js.map": "/recipe-cards/static/js/3.b5af7fbe.chunk.js.map",
+    "static/js/3.f2e13dc4.chunk.js": "/recipe-cards/static/js/3.f2e13dc4.chunk.js",
+    "static/js/3.f2e13dc4.chunk.js.map": "/recipe-cards/static/js/3.f2e13dc4.chunk.js.map",
     "static/js/4.a6a3d3d1.chunk.js": "/recipe-cards/static/js/4.a6a3d3d1.chunk.js",
     "static/js/4.a6a3d3d1.chunk.js.map": "/recipe-cards/static/js/4.a6a3d3d1.chunk.js.map",
     "static/js/5.20eb2421.chunk.js": "/recipe-cards/static/js/5.20eb2421.chunk.js",
     "static/js/5.20eb2421.chunk.js.map": "/recipe-cards/static/js/5.20eb2421.chunk.js.map",
     "index.html": "/recipe-cards/index.html",
     "static/css/3.1f785abf.chunk.css.map": "/recipe-cards/static/css/3.1f785abf.chunk.css.map",
-    "static/css/main.b60e2ac3.chunk.css.map": "/recipe-cards/static/css/main.b60e2ac3.chunk.css.map",
+    "static/css/main.b0a779ed.chunk.css.map": "/recipe-cards/static/css/main.b0a779ed.chunk.css.map",
     "static/js/2.8c4793ec.chunk.js.LICENSE.txt": "/recipe-cards/static/js/2.8c4793ec.chunk.js.LICENSE.txt",
-    "static/js/3.b5af7fbe.chunk.js.LICENSE.txt": "/recipe-cards/static/js/3.b5af7fbe.chunk.js.LICENSE.txt",
+    "static/js/3.f2e13dc4.chunk.js.LICENSE.txt": "/recipe-cards/static/js/3.f2e13dc4.chunk.js.LICENSE.txt",
     "static/js/4.a6a3d3d1.chunk.js.LICENSE.txt": "/recipe-cards/static/js/4.a6a3d3d1.chunk.js.LICENSE.txt",
     "static/js/5.20eb2421.chunk.js.LICENSE.txt": "/recipe-cards/static/js/5.20eb2421.chunk.js.LICENSE.txt",
     "static/media/milk-bottle.d1f01a7e.svg": "/recipe-cards/static/media/milk-bottle.d1f01a7e.svg"
@@ -26,8 +26,8 @@
   "entrypoints": [
     "static/js/runtime-main.eebdb374.js",
     "static/css/3.1f785abf.chunk.css",
-    "static/js/3.b5af7fbe.chunk.js",
-    "static/css/main.b60e2ac3.chunk.css",
-    "static/js/main.75ec5e94.chunk.js"
+    "static/js/3.f2e13dc4.chunk.js",
+    "static/css/main.b0a779ed.chunk.css",
+    "static/js/main.c7d6b7c6.chunk.js"
   ]
 }
