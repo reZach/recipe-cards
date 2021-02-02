@@ -381,9 +381,11 @@ class App extends React.Component {
     event.preventDefault();
 
     let steps = this.state.steps;
-    steps.pop();
+    if (steps.length > 1){
+      steps.pop();
 
-    this.setState({ steps });
+      this.setState({ steps });
+    }    
   }
 
   setSource(event) {
@@ -767,15 +769,15 @@ class App extends React.Component {
               <div className="field">
                 <label className="label">Steps</label>
                 <div className="control">
-                  {this.renderSteps()}
-                  <button className="button is-primary" onClick={this.addStep}>
-                    Add step
-                  </button>
+                  {this.renderSteps()}                  
                   <button
                     className="button is-danger"
                     onClick={this.removeStep}
                   >
                     Remove step
+                  </button>
+                  <button className="button is-primary ml-2" onClick={this.addStep}>
+                    Add step
                   </button>
                 </div>
               </div>
